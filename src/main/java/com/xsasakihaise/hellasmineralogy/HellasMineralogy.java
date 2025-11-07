@@ -1,9 +1,13 @@
 package com.xsasakihaise.hellasmineralogy;
 
+import com.xsasakihaise.hellascontrol.api.CoreCheck;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,6 +25,16 @@ public class HellasMineralogy {
     }
 
     private void onCommonSetup(final FMLCommonSetupEvent event) {
+        CoreCheck.verifyCoreLoaded();
+        if (FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
+            CoreCheck.verifyEntitled("mineralogy");
+        }
+
+        if (!ModList.get().isLoaded("hellascontrol")) {
+            LOGGER.warn("HellasControl not detected; skipping HellasMineralogy initialization.");
+            return;
+        }
+
         LOGGER.info("HellasMineralogy common setup initialized.");
     }
 
