@@ -1,0 +1,30 @@
+package com.xsasakihaise.hellasmineralogy;
+
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+/**
+ * Primary mod entrypoint for HellasMineralogy.
+ */
+@Mod(HellasMineralogy.MOD_ID)
+public class HellasMineralogy {
+    public static final String MOD_ID = "hellasmineralogy";
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public HellasMineralogy() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
+    }
+
+    private void onCommonSetup(final FMLCommonSetupEvent event) {
+        LOGGER.info("HellasMineralogy common setup initialized.");
+    }
+
+    private void onClientSetup(final FMLClientSetupEvent event) {
+        LOGGER.info("HellasMineralogy client setup initialized.");
+    }
+}

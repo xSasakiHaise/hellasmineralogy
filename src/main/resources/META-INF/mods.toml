@@ -1,34 +1,35 @@
 modLoader="javafml"
 loaderVersion="[36,)"
-logoFile="HellasAudio.png"
+logoFile="HellasMineralogy.png"
 license="Restricted"
 
 [[mods]]
-modId="hellasaudio"
-version="2.1.0"
-displayName="HellasAudio"
+modId="hellasmineralogy"
+version="1.0.0"
+displayName="HellasMineralogy"
 displayURL="https://discord.pixelmon-server.com"
 credits="xSasaki_Haise"
 authors="xSasaki_Haise"
 description='''
 Welcome to Hellas :)
+Explore the mineral wealth of the region.
 '''
 
-[[dependencies.hellasaudio]]
+[[dependencies.hellasmineralogy]]
 modId="forge"
 mandatory=true
 versionRange="[36,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.hellasaudio]]
+[[dependencies.hellasmineralogy]]
 modId="minecraft"
 mandatory=true
 versionRange="[1.16.5,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.hellasaudio]]
+[[dependencies.hellasmineralogy]]
 modId="hellascontrol"
 mandatory=true
 versionRange="[1.0.0,)"
