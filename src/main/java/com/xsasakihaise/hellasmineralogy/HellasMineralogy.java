@@ -24,7 +24,10 @@ import org.apache.logging.log4j.Logger;
 @Mod(HellasMineralogy.MOD_ID)
 public class HellasMineralogy {
     public static final String MOD_ID = "hellasmineralogy";
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger("HellasMineralogy");
+    private static final String ENTITLEMENT_KEY = "mineralogy";
+    private static volatile boolean ENABLED = false;
+    private static volatile String DISABLE_REASON = "UNINITIALIZED";
 
     /**
      * Registers the setup listeners on construction so that Forge invokes the lifecycle
@@ -46,18 +49,7 @@ public class HellasMineralogy {
      * @param event the Forge common setup lifecycle event
      */
     private void onCommonSetup(final FMLCommonSetupEvent event) {
-        CoreCheck.verifyCoreLoaded();
-        if (FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
-            // Dedicated servers are gated by an entitlement code provided by Hellas Control.
-            CoreCheck.verifyEntitled("mineralogy");
-        }
-
-        if (!ModList.get().isLoaded("hellascontrol")) {
-            LOGGER.warn("HellasControl not detected; skipping HellasMineralogy initialization.");
-            return;
-        }
-
-        LOGGER.info("HellasMineralogy common setup initialized.");
+        event.enqueueWork(this::initGate);
     }
 
     /**
@@ -67,6 +59,37 @@ public class HellasMineralogy {
      * @param event the Forge client setup lifecycle event
      */
     private void onClientSetup(final FMLClientSetupEvent event) {
+        if (!ENABLED) {
+            return;
+        }
         LOGGER.info("HellasMineralogy client setup initialized.");
+    }
+
+    private void initGate() {
+        if (FMLEnvironment.dist != Dist.DEDICATED_SERVER) {
+            ENABLED = true;
+            DISABLE_REASON = "OK (non-dedicated)";
+            return;
+        }
+
+        if (!ModList.get().isLoaded("hellascontrol")) {
+            ENABLED = false;
+            DISABLE_REASON = "HellasControl missing";
+            LOGGER.warn("[HellasMineralogy] disabled: {}", DISABLE_REASON);
+            return;
+        }
+
+        try {
+            CoreCheck.verifyCoreLoaded();
+            CoreCheck.verifyEntitled(ENTITLEMENT_KEY);
+
+            ENABLED = true;
+            DISABLE_REASON = "OK";
+            LOGGER.info("[HellasMineralogy] enabled (license OK) entitlement='{}'", ENTITLEMENT_KEY);
+        } catch (Exception e) {
+            ENABLED = false;
+            DISABLE_REASON = "License invalid";
+            LOGGER.warn("[HellasMineralogy] disabled: {} entitlement='{}'", DISABLE_REASON, ENTITLEMENT_KEY, e);
+        }
     }
 }
